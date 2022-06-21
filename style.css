@@ -1,0 +1,77 @@
+td{
+    text-align: right;
+    font-size : 0.8rem;
+}
+.symbol, .stock-name{
+    text-align: left;
+    font-size: 0.8rem;
+}
+
+.table-info{
+    font-size: 0.7rem;
+    text-align: right;
+}
+
+.align-left{
+    text-align: left;
+}
+
+.table{
+    vertical-align:middle;
+}
+
+#logos{
+    font-family: 'Raleway', sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
+    color: rgb(36, 53, 203);  
+    font-size:1.5rem;   
+} 
+
+#match-title{
+   font-weight:bold;
+   font-size: 0.8rem;
+}
+
+#add-to-portfolio {
+    font-size: 0.7rem;
+    padding: 1px 2px;
+    font-weight : bold;
+ }
+
+span.match{
+    display:inline-block;
+    font-size: 0.6rem;
+    padding: 0px 30px 0px 0px;
+}
+
+.nav-item{
+    font-size:0.8rem;   
+}
+
+.search-text {
+    font-size:0.8rem;   
+}
+
+.index-col-width{
+    font-size:0.7rem;  
+    border-right: 1px dotted blue;
+}
+
+#index-row{
+    flex-wrap:nowrap;
+}
+
+.index-name{
+    color:rgb(40, 40, 241);
+    font-weight : bold;
+}
+
+#index-row:last-child {
+    border-right:0px;
+}
+
+.radarChart{
+    height: 150px;
+    width:150px;
+    padding:0 0;
+}
