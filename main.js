@@ -5,7 +5,7 @@ const urlOne = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "lN5d9bSbjR6GbwdeQYcBL9A0n9LVqxH32RWtlwUB",
+    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
   },
 };
 
@@ -13,7 +13,7 @@ const urlTwo = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "lN5d9bSbjR6GbwdeQYcBL9A0n9LVqxH32RWtlwUB",
+    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
   },
 };
 
@@ -21,7 +21,7 @@ const urlIndex = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "lN5d9bSbjR6GbwdeQYcBL9A0n9LVqxH32RWtlwUB",
+    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
   },
 };
 
@@ -330,7 +330,7 @@ const makeChart = function (chartData, currentID) {
       {
         data: chartData,
         fill: true,
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        backgroundColor: "rgba(25, 105, 255, 0.3)",
         borderColor: "rgb(255, 99, 132)",
         pointBackgroundColor: "rgb(255, 99, 132)",
         pointBorderColor: "#fff",
@@ -344,7 +344,7 @@ const makeChart = function (chartData, currentID) {
     type: "radar",
     data: data,
     options: {
-      scales: { r: { suggestedMax: 30, suggestedMin: 0 } },
+      scales: { r: { max: 100, min: 0 } },
       plugins: {
         labels: { font: { size: 2 } },
 
@@ -366,7 +366,6 @@ const makeChart = function (chartData, currentID) {
 };
 
 const scoringSystem = function (array) {
-  // const sum = array.reduce((a, b) => a + b, 0);
   const arrayLength = array.length;
   for (let i = 0; i < arrayLength; i++) {
     if (isNaN(Number(array[i])) === true) {
@@ -375,8 +374,43 @@ const scoringSystem = function (array) {
   }
 
   const max = Math.max(...array);
-  const mapArray = array.map((item) => Math.floor((item / max) * 100));
+  const mapArray = array.map((item) => Math.floor((item / max) * 75) + 25);
   console.log(max);
   console.log(mapArray);
   return mapArray;
 };
+
+// const invertScoringSystem = function (array) {
+//   // const sum = array.reduce((a, b) => a + b, 0);
+
+//   const arrayLength = array.length;
+//   for (let i = 0; i < arrayLength; i++) {
+//     if (isNaN(Number(array[i])) === true) {
+//       array[i] = 0;
+//     }
+//   }
+//   const max = Math.max(...array);
+//   const mapArray = array.map((item) => 100 - Math.floor((item / max) * 75));
+//   console.log(max);
+//   console.log(mapArray);
+//   return mapArray;
+// };
+
+const addToPrototype = function () {
+  const parentSelector = document.getElementById("table-body");
+  parentSelector.onclick = function (event) {
+    const elementClicked = event.target;
+    const elementWithEventHandler = event.currentTarget;
+    elementClicked.style.backgroundColor = "yellow";
+    console.log(elementClicked);
+
+    setTimeout(() => {
+      alert(
+        `target=${elementClicked.tagName}, this=${elementWithEventHandler.tagName}`
+      );
+      event.target.style.backgroundColor = "";
+    }, 0);
+  };
+};
+
+addToPrototype();
