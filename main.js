@@ -5,7 +5,7 @@ const urlOne = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 
@@ -13,7 +13,7 @@ const urlTwo = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 
@@ -21,7 +21,7 @@ const urlIndex = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 
@@ -96,8 +96,6 @@ axios
           convertNumberFormat(dataArray[i].marketCap),
           dataArray[i].forwardPE,
           dataArray[i].priceToBook,
-          "td",
-          "th",
           "tr",
           "tbody"
         );
@@ -115,12 +113,25 @@ axios
           dataArrayIndex[i].regularMarketChangePercent
         );
       }
+      checkButton();
+      addToPortfolio();
     })
   )
 
   .catch(function (error) {
     console.error(error);
   });
+
+const addPortfolioRowToDom = function (
+  textSymbol,
+  textName,
+  textPrice,
+  textChangePercent,
+  chart
+) {
+  const divTag = document.createElement("div");
+  divTag.setAttribute("class", "col my-portfolio");
+};
 
 const addIndexRowToDom = function (
   textName,
@@ -163,6 +174,29 @@ const setColorChange = function (textChange, changeEl) {
   }
 };
 
+const addDOMtoPorfolioPage = function (
+  textSymbol,
+  textName,
+  textPrice,
+  textChangePercent,
+  chart
+) {
+  const colContainerEl = document.createElement("div");
+  colContainerEl.setAttribute("class", "col porto-col-width");
+  const rowEl = document.createElement("row");
+  rowEl.setAttribute("class", "row portfolio-box-padding");
+  const colChartEl = document.createElement("div");
+  colChartEl.setAttribute("class", "col chart-portfolio");
+  const colPortEl = document.createElement("div");
+  colPortEl.setAttribute("class", "col-8");
+  const col1stRowInfo = document.createElement("div");
+  col1stRowInfo.setAttribute("class", "col-symbol");
+  const col2ndRowInfo = document.createElement("div");
+  col2ndRowInfo.setAttribute("class", "col-name");
+  const col3rdRowInfo = document.createElement("div");
+  col3rdRowInfo.setAttribute("class", "col-percent-change");
+};
+
 const addRowToDom = function (
   currentID,
   convertDataArray,
@@ -176,28 +210,26 @@ const addRowToDom = function (
   textMarketCap,
   textPE,
   textPB,
-  tdTag,
-  thTag,
   childSelector,
   parentSelector
 ) {
   //create tag for table framework
-  const rowEl = document.createElement(thTag);
+  const rowEl = document.createElement("th");
   rowEl.setAttribute("scope", "row");
-  const symbolEl = document.createElement(tdTag);
+  const symbolEl = document.createElement("td");
   symbolEl.setAttribute("class", "symbol");
-  const nameEl = document.createElement(tdTag);
+  const nameEl = document.createElement("td");
   nameEl.setAttribute("class", "stock-name");
-  const priceEl = document.createElement(tdTag);
-  const changeEl = document.createElement(tdTag);
-  const changePercentEl = document.createElement(tdTag);
-  const volumeEl = document.createElement(tdTag);
-  const averageVolumeEl = document.createElement(tdTag);
-  const marketCapEl = document.createElement(tdTag);
-  const peEl = document.createElement(tdTag);
-  const pbEl = document.createElement(tdTag);
+  const priceEl = document.createElement("td");
+  const changeEl = document.createElement("td");
+  const changePercentEl = document.createElement("td");
+  const volumeEl = document.createElement("td");
+  const averageVolumeEl = document.createElement("td");
+  const marketCapEl = document.createElement("td");
+  const peEl = document.createElement("td");
+  const pbEl = document.createElement("td");
 
-  const chartEl = document.createElement(tdTag);
+  const chartEl = document.createElement("td");
   const chartPalette = document.createElement("canvas");
 
   chartPalette.setAttribute("id", currentID);
@@ -395,22 +427,71 @@ const scoringSystem = function (array) {
 //   console.log(mapArray);
 //   return mapArray;
 // };
+let allChecklist = "";
+let allChecklistLength = "";
+const portfolioArrayIndex = [];
 
-const addToPrototype = function () {
+const checkButton = function () {
   const parentSelector = document.getElementById("table-body");
   parentSelector.onclick = function (event) {
     const elementClicked = event.target;
-    const elementWithEventHandler = event.currentTarget;
-    elementClicked.style.backgroundColor = "yellow";
-    console.log(elementClicked);
+    // const elementWithEventHandler = event.currentTarget;
 
-    setTimeout(() => {
-      alert(
-        `target=${elementClicked.tagName}, this=${elementWithEventHandler.tagName}`
-      );
-      event.target.style.backgroundColor = "";
-    }, 0);
+    console.log(elementClicked.id);
+    console.log(event.currentTarget);
+    console.log(elementClicked.parentElement);
+
+    if (elementClicked.id == "flexCheckDefault") {
+      allChecklist = document.querySelectorAll("#flexCheckDefault");
+
+      allChecklistLength = allChecklist.length;
+      let status = false;
+
+      for (let i = 0; i < allChecklistLength; i++) {
+        if (allChecklist[i].checked == true) {
+          status = true;
+        }
+      }
+
+      if (status == true) {
+        document.getElementById("add-to-portfolio").disabled = false;
+      } else {
+        document.getElementById("add-to-portfolio").disabled = true;
+      }
+
+      console.log(status);
+    }
+
+    // if (elementClicked.id == "add-to-portfolio") {
+    //   for (let i = 0; i < allChecklistLength; i++) {
+    //     if (allChecklist[i].checked == true) {
+    //       portfolioArrayIndex.push(i);
+    //     }
+    //   }
+    // }
+
+    // console.log(portfolioArrayIndex);
   };
 };
 
-addToPrototype();
+const addToPortfolio = function (item) {
+  const addToPortoParentSelector = document.getElementById("add-to-porto-row");
+  console.log(addToPortoParentSelector);
+  addToPortoParentSelector.onclick = function (event) {
+    const elementClicked = event.target;
+    if (elementClicked.id == "add-to-portfolio") {
+      for (let i = 0; i < allChecklistLength; i++) {
+        if (allChecklist[i].checked == true) {
+          portfolioArrayIndex.push(i);
+        }
+      }
+    }
+    const sortedPortfolioIndex = [...new Set(portfolioArrayIndex)];
+    console.log(portfolioArrayIndex);
+    console.log(sortedPortfolioIndex);
+
+    setTimeout(() => {
+      alert(`Successfully added to your portfolio.`);
+    }, 2);
+  };
+};
