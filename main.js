@@ -3,26 +3,29 @@ const cacheAvailable = "caches" in self;
 
 const urlOne = {
   method: "GET",
-  url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
+  url:
+    "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
-  },
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz"
+  }
 };
 
 const urlTwo = {
   method: "GET",
-  url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
+  url:
+    "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
-  },
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz"
+  }
 };
 
 const urlIndex = {
   method: "GET",
-  url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
+  url:
+    "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
-  },
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz"
+  }
 };
 
 // "Value", "Future", "Past", "Health", "Dividend"
@@ -32,7 +35,7 @@ const urlIndex = {
 // textPE,
 // textPB,
 // textChangePercent
-
+let sortedPortfolioIndex = [0, 1, 2, 3, 4];
 const price = [];
 const volume = [];
 const marketCap = [];
@@ -79,25 +82,41 @@ axios
       );
 
       console.log(convertDataArray);
+      if (window.location.pathname == "./index") {
+        for (let i = 0; i < dataArrayLength; i++) {
+          const currentID = `convert-data-${i}`;
 
-      for (let i = 0; i < dataArrayLength; i++) {
-        const currentID = `convert-data-${i}`;
+          addRowToDom(
+            currentID,
+            convertDataArray[i],
+            dataArray[i].symbol,
+            dataArray[i].longName,
+            dataArray[i].regularMarketPrice,
+            dataArray[i].regularMarketChange.toFixed(4),
+            dataArray[i].regularMarketChangePercent.toFixed(2),
+            convertNumberFormat(dataArray[i].regularMarketVolume),
+            convertNumberFormat(dataArray[i].averageDailyVolume3Month),
+            convertNumberFormat(dataArray[i].marketCap),
+            dataArray[i].forwardPE,
+            dataArray[i].priceToBook,
+            "tr",
+            "table-body"
+          );
+        }
+      }
 
-        addRowToDom(
-          currentID,
-          convertDataArray[i],
-          dataArray[i].symbol,
-          dataArray[i].longName,
-          dataArray[i].regularMarketPrice,
-          dataArray[i].regularMarketChange.toFixed(4),
-          dataArray[i].regularMarketChangePercent.toFixed(2),
-          convertNumberFormat(dataArray[i].regularMarketVolume),
-          convertNumberFormat(dataArray[i].averageDailyVolume3Month),
-          convertNumberFormat(dataArray[i].marketCap),
-          dataArray[i].forwardPE,
-          dataArray[i].priceToBook,
-          "tr",
-          "tbody"
+      const sortedPortfolioIndexLength = sortedPortfolioIndex.length;
+
+      for (let i = 0; i < sortedPortfolioIndexLength; i++) {
+        const currentID = `convert-data-${sortedPortfolioIndex[i]}`;
+        const chartID = `chart-id-${sortedPortfolioIndex[i]}`;
+        addDOMtoPorfolioPage(
+          convertDataArray,
+          chartID,
+          `dataArray${sortedPortfolioIndex[i]}.symbol`,
+          `dataArray${sortedPortfolioIndex[i]}.longName`,
+          `dataArray${sortedPortfolioIndex[i]}.RegularMarketPrice`,
+          `dataArray${sortedPortfolioIndex[i]}.RegularMarketChangePercent`
         );
       }
 
@@ -113,6 +132,7 @@ axios
           dataArrayIndex[i].regularMarketChangePercent
         );
       }
+
       checkButton();
       addToPortfolio();
     })
@@ -121,17 +141,6 @@ axios
   .catch(function (error) {
     console.error(error);
   });
-
-const addPortfolioRowToDom = function (
-  textSymbol,
-  textName,
-  textPrice,
-  textChangePercent,
-  chart
-) {
-  const divTag = document.createElement("div");
-  divTag.setAttribute("class", "col my-portfolio");
-};
 
 const addIndexRowToDom = function (
   textName,
@@ -175,26 +184,44 @@ const setColorChange = function (textChange, changeEl) {
 };
 
 const addDOMtoPorfolioPage = function (
+  convertDataArray,
+  chartID,
   textSymbol,
   textName,
   textPrice,
-  textChangePercent,
-  chart
+  textChangePercent
 ) {
-  const colContainerEl = document.createElement("div");
-  colContainerEl.setAttribute("class", "col porto-col-width");
-  const rowEl = document.createElement("row");
-  rowEl.setAttribute("class", "row portfolio-box-padding");
-  const colChartEl = document.createElement("div");
-  colChartEl.setAttribute("class", "col chart-portfolio");
-  const colPortEl = document.createElement("div");
-  colPortEl.setAttribute("class", "col-8");
-  const col1stRowInfo = document.createElement("div");
-  col1stRowInfo.setAttribute("class", "col-symbol");
-  const col2ndRowInfo = document.createElement("div");
-  col2ndRowInfo.setAttribute("class", "col-name");
-  const col3rdRowInfo = document.createElement("div");
-  col3rdRowInfo.setAttribute("class", "col-percent-change");
+  if (sortedPortfolioIndex.length > 0) {
+    const chartEl = document.createElement("canvas");
+    chartEl.setAttribute("id", chartID);
+    makeChart(convertDataArray, chartID);
+    document.getElementById(chartID).appendChild(clone);
+
+    const colContainerEl = document.createElement("div");
+    colContainerEl.setAttribute("class", "col porto-col-width");
+
+    const rowEl = document.createElement("row");
+    rowEl.setAttribute("class", "row portfolio-box-padding");
+
+    const colChartEl = document.createElement("div");
+    colChartEl.setAttribute("class", "col chart-portfolio");
+    colChartEl.appendChild(chartEl);
+
+    const colPortEl = document.createElement("div");
+    colPortEl.setAttribute("class", "col-8");
+
+    const col1stRowInfo = document.createElement("div");
+    col1stRowInfo.setAttribute("class", "col-symbol col-price");
+    col1stRowInfo.innerText(`${textSymbol} ${textPrice}`);
+
+    const col2ndRowInfo = document.createElement("div");
+    col2ndRowInfo.setAttribute("class", "col-name");
+    col2ndRowInfo.innerText(textName);
+
+    const col3rdRowInfo = document.createElement("div");
+    col3rdRowInfo.setAttribute("class", "col-percent-change");
+    col3rdRowInfo.innerText(textChangePercent);
+  }
 };
 
 const addRowToDom = function (
@@ -278,7 +305,7 @@ const addRowToDom = function (
   childEl.appendChild(pbEl);
   childEl.appendChild(chartEl);
 
-  const parentEl = document.querySelector(parentSelector);
+  const parentEl = document.getElementById(parentSelector);
 
   textPE = roundDecimal(textPE);
   textPB = roundDecimal(textPB);
@@ -367,9 +394,9 @@ const makeChart = function (chartData, currentID) {
         pointBackgroundColor: "rgb(255, 99, 132)",
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgb(255, 99, 132)",
-      },
-    ],
+        pointHoverBorderColor: "rgb(255, 99, 132)"
+      }
+    ]
   };
 
   const config = {
@@ -382,16 +409,16 @@ const makeChart = function (chartData, currentID) {
 
         legend: {
           labels: { font: { size: 2 } },
-          display: false,
-        },
+          display: false
+        }
       },
       elements: {
         line: {
-          borderWidth: 1,
+          borderWidth: 1
         },
-        point: { pointRadius: 0.5 },
-      },
-    },
+        point: { pointRadius: 0.5 }
+      }
+    }
   };
 
   const myChart = new Chart(document.getElementById(currentID), config);
@@ -486,7 +513,7 @@ const addToPortfolio = function (item) {
         }
       }
     }
-    const sortedPortfolioIndex = [...new Set(portfolioArrayIndex)];
+    sortedPortfolioIndex = [...new Set(portfolioArrayIndex)];
     console.log(portfolioArrayIndex);
     console.log(sortedPortfolioIndex);
 
