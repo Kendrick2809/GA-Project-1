@@ -7,7 +7,7 @@ td{
     font-size: 0.8rem;
 }
 
-.table-info{
+.table-dark{
     font-size: 0.6rem;
     text-align: right;
 }
@@ -27,7 +27,7 @@ td{
 #logos{
     font-family: 'Raleway', sans-serif;
     font-family: 'Source Sans Pro', sans-serif;
-    color: rgb(36, 53, 203);  
+    color: rgb(4, 49, 100);  
     font-size:1.5rem;   
 } 
 
@@ -58,7 +58,7 @@ span.match{
 
 .index-col-width{
     font-size:0.7rem;  
-    border-right: 1px dotted blue;
+    border-right: 1px dotted rgb(4, 49, 100);
 }
 
 .porto-col-width{
@@ -74,7 +74,7 @@ span.match{
 }
 
 .index-name{
-    color:rgb(40, 40, 241);
+    color:rgb(4, 49, 100);
     font-weight : bold;
 }
 
@@ -86,4 +86,62 @@ span.match{
     height: 150px;
     width:150px;
     padding:0 0;
+}
+
+.radarChart2{
+    height: 50px;
+    width:50px;
+    padding:0 0;
+}
+
+.chart-container{
+    width:150px;
+    
+}
+
+.col-symbol{
+    font-size: 0.8rem;
+   
+    color: rgb(4, 49, 100)
+}
+
+.col-price{
+    font-size: 0.7rem;
+}
+
+.col-name{
+    font-size: 0.7rem;
+    font-weight : bold;
+    color: rgb(4, 49, 100)
+}
+
+.col-percent-change{
+    font-size: 0.75rem;
+}
+
+.col-info-port{
+    text-align: right;
+}
+
+#my-porto-row{
+    font-weight:bold;
+}
+
+#match-title{
+    font-size:0.8rem;
+}
+
+.parent-container{
+    width:100%;
+    text-align: left;
+    width:100vw;
+    margin: 0 0;
+}
+
+.portfolio-box-padding:hover{
+    background-color: rgb(179, 177, 177, 0.3);
+}
+
+.portfolio-box-padding{
+    background-color: rgba(4, 49, 100, 0.05);
 }

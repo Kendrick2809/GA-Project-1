@@ -3,39 +3,31 @@ const cacheAvailable = "caches" in self;
 
 const urlOne = {
   method: "GET",
-  url:
-    "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
+  url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz"
-  }
+    "X-API-KEY": "x06EF4Q0Dkac2wiIVBDnG5lfhHnEn8aT3y8sTUPg",
+  },
 };
 
 const urlTwo = {
   method: "GET",
-  url:
-    "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
+  url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz"
-  }
+    "X-API-KEY": "x06EF4Q0Dkac2wiIVBDnG5lfhHnEn8aT3y8sTUPg",
+  },
 };
 
 const urlIndex = {
   method: "GET",
-  url:
-    "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
+  url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz"
-  }
+    "X-API-KEY": "x06EF4Q0Dkac2wiIVBDnG5lfhHnEn8aT3y8sTUPg",
+  },
 };
-
-// "Value", "Future", "Past", "Health", "Dividend"
-//  textVolume,
-// textAverageVolume,
-// textMarketCap,
-// textPE,
-// textPB,
-// textChangePercent
-let sortedPortfolioIndex = [0, 1, 2, 3, 4];
+// [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+let sortedPortfolioIndex = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+];
 const price = [];
 const volume = [];
 const marketCap = [];
@@ -52,9 +44,12 @@ axios
     axios.spread((...responses) => {
       const responseOne = responses[0];
       const responseTwo = responses[1];
+      const responseThree = responses[2];
+
       console.log(responseOne, responseTwo);
       const dataArray1 = responseOne.data.quoteResponse.result;
       const dataArray2 = responseTwo.data.quoteResponse.result;
+      const dataArrayIndex = responseThree.data.quoteResponse.result;
       const dataArray = [...dataArray1, ...dataArray2];
 
       const dataArrayLength = dataArray.length;
@@ -81,11 +76,27 @@ axios
         PBChartData
       );
 
-      console.log(convertDataArray);
-      if (window.location.pathname == "./index") {
+      const cloneConvertDataArray = convertDataArray.slice();
+
+      console.log(cloneConvertDataArray);
+
+      const indexArrayLength = dataArrayIndex.length;
+
+      if (
+        window.location.pathname ==
+        "/Users/kendrickwinata/GA-Project-1/index.html"
+      ) {
+        for (let i = 0; i < indexArrayLength; i++) {
+          addIndexRowToDom(
+            dataArrayIndex[i].shortName,
+            dataArrayIndex[i].regularMarketPrice,
+            dataArrayIndex[i].regularMarketChange,
+            dataArrayIndex[i].regularMarketChangePercent
+          );
+        }
+
         for (let i = 0; i < dataArrayLength; i++) {
           const currentID = `convert-data-${i}`;
-
           addRowToDom(
             currentID,
             convertDataArray[i],
@@ -103,38 +114,33 @@ axios
             "table-body"
           );
         }
+
+        checkButton();
+        addToPortfolio();
       }
 
       const sortedPortfolioIndexLength = sortedPortfolioIndex.length;
-
-      for (let i = 0; i < sortedPortfolioIndexLength; i++) {
-        const currentID = `convert-data-${sortedPortfolioIndex[i]}`;
-        const chartID = `chart-id-${sortedPortfolioIndex[i]}`;
-        addDOMtoPorfolioPage(
-          convertDataArray,
-          chartID,
-          `dataArray${sortedPortfolioIndex[i]}.symbol`,
-          `dataArray${sortedPortfolioIndex[i]}.longName`,
-          `dataArray${sortedPortfolioIndex[i]}.RegularMarketPrice`,
-          `dataArray${sortedPortfolioIndex[i]}.RegularMarketChangePercent`
-        );
+      if (
+        window.location.pathname ==
+        "/Users/kendrickwinata/GA-Project-1/portfolio.html"
+      ) {
+        if (sortedPortfolioIndex.length > 0) {
+          for (let i = 0; i < sortedPortfolioIndexLength; i++) {
+            const chartID = "chart-id-" + sortedPortfolioIndex[i];
+            addDOMtoPorfolioPage(
+              cloneConvertDataArray[`${sortedPortfolioIndex[i]}`],
+              chartID,
+              dataArray[`${sortedPortfolioIndex[i]}`].symbol,
+              dataArray[`${sortedPortfolioIndex[i]}`].longName,
+              dataArray[`${sortedPortfolioIndex[i]}`].regularMarketPrice,
+              dataArray[`${sortedPortfolioIndex[i]}`].regularMarketChangePercent
+            );
+          }
+          portfolioClickButton();
+        }
       }
 
-      const responseThree = responses[2];
-      const dataArrayIndex = responseThree.data.quoteResponse.result;
       console.log(dataArrayIndex);
-      const indexArrayLength = dataArrayIndex.length;
-      for (let i = 0; i < indexArrayLength; i++) {
-        addIndexRowToDom(
-          dataArrayIndex[i].shortName,
-          dataArrayIndex[i].regularMarketPrice,
-          dataArrayIndex[i].regularMarketChange,
-          dataArrayIndex[i].regularMarketChangePercent
-        );
-      }
-
-      checkButton();
-      addToPortfolio();
     })
   )
 
@@ -191,37 +197,52 @@ const addDOMtoPorfolioPage = function (
   textPrice,
   textChangePercent
 ) {
-  if (sortedPortfolioIndex.length > 0) {
-    const chartEl = document.createElement("canvas");
-    chartEl.setAttribute("id", chartID);
-    makeChart(convertDataArray, chartID);
-    document.getElementById(chartID).appendChild(clone);
+  const chartPalette = document.createElement("canvas");
+  const chartEl = document.createElement("div");
+  chartEl.appendChild(chartPalette);
+  chartPalette.setAttribute("id", chartID);
+  chartPalette.setAttribute("class", "radarChart2");
+  chartPalette.setAttribute("width", "100");
+  chartPalette.setAttribute("height", "100");
+  chartEl.setAttribute("class", "chart-container");
 
-    const colContainerEl = document.createElement("div");
-    colContainerEl.setAttribute("class", "col porto-col-width");
+  const colContainerEl = document.createElement("div");
+  colContainerEl.setAttribute("class", "col porto-col-width hover-overlay");
 
-    const rowEl = document.createElement("row");
-    rowEl.setAttribute("class", "row portfolio-box-padding");
+  const rowEl = document.createElement("div");
+  rowEl.setAttribute("class", "row portfolio-box-padding");
 
-    const colChartEl = document.createElement("div");
-    colChartEl.setAttribute("class", "col chart-portfolio");
-    colChartEl.appendChild(chartEl);
+  const colChartEl = document.createElement("div");
+  colChartEl.setAttribute("class", "col chart-portfolio");
+  colChartEl.appendChild(chartEl);
 
-    const colPortEl = document.createElement("div");
-    colPortEl.setAttribute("class", "col-8");
+  const colPortEl = document.createElement("div");
+  colPortEl.setAttribute("class", "col");
 
-    const col1stRowInfo = document.createElement("div");
-    col1stRowInfo.setAttribute("class", "col-symbol col-price");
-    col1stRowInfo.innerText(`${textSymbol} ${textPrice}`);
+  const col1stRowInfo = document.createElement("div");
+  col1stRowInfo.setAttribute("class", "col-symbol col-price");
+  col1stRowInfo.innerText = textSymbol + " $" + textPrice;
 
-    const col2ndRowInfo = document.createElement("div");
-    col2ndRowInfo.setAttribute("class", "col-name");
-    col2ndRowInfo.innerText(textName);
+  const col2ndRowInfo = document.createElement("div");
+  col2ndRowInfo.setAttribute("class", "col-name");
+  col2ndRowInfo.innerText = textName;
 
-    const col3rdRowInfo = document.createElement("div");
-    col3rdRowInfo.setAttribute("class", "col-percent-change");
-    col3rdRowInfo.innerText(textChangePercent);
-  }
+  const col3rdRowInfo = document.createElement("div");
+  col3rdRowInfo.setAttribute("class", "col-percent-change");
+  col3rdRowInfo.innerText = roundDecimal(textChangePercent) + "%";
+  setColorChange(textChangePercent, col3rdRowInfo);
+  const parentEl = document.getElementById("portfolio-session");
+
+  colContainerEl.appendChild(rowEl);
+  rowEl.appendChild(colChartEl);
+  rowEl.appendChild(colPortEl);
+  colPortEl.appendChild(col1stRowInfo);
+  colPortEl.appendChild(col2ndRowInfo);
+  colPortEl.appendChild(col3rdRowInfo);
+
+  parentEl.appendChild(colContainerEl);
+
+  makeChart(convertDataArray, chartID);
 };
 
 const addRowToDom = function (
@@ -389,14 +410,14 @@ const makeChart = function (chartData, currentID) {
       {
         data: chartData,
         fill: true,
-        backgroundColor: "rgba(25, 105, 255, 0.3)",
+        backgroundColor: "rgba(4, 49, 100, 0.3)",
         borderColor: "rgb(255, 99, 132)",
         pointBackgroundColor: "rgb(255, 99, 132)",
         pointBorderColor: "#fff",
         pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgb(255, 99, 132)"
-      }
-    ]
+        pointHoverBorderColor: "rgb(255, 99, 132)",
+      },
+    ],
   };
 
   const config = {
@@ -409,16 +430,16 @@ const makeChart = function (chartData, currentID) {
 
         legend: {
           labels: { font: { size: 2 } },
-          display: false
-        }
+          display: false,
+        },
       },
       elements: {
         line: {
-          borderWidth: 1
+          borderWidth: 1,
         },
-        point: { pointRadius: 0.5 }
-      }
-    }
+        point: { pointRadius: 0.5 },
+      },
+    },
   };
 
   const myChart = new Chart(document.getElementById(currentID), config);
@@ -512,13 +533,25 @@ const addToPortfolio = function (item) {
           portfolioArrayIndex.push(i);
         }
       }
+      setTimeout(() => {
+        alert(`Successfully added to your portfolio.`);
+      }, 2);
     }
     sortedPortfolioIndex = [...new Set(portfolioArrayIndex)];
     console.log(portfolioArrayIndex);
     console.log(sortedPortfolioIndex);
+  };
+};
 
-    setTimeout(() => {
-      alert(`Successfully added to your portfolio.`);
-    }, 2);
+const portfolioClickButton = function () {
+  const parentSelector = document.getElementById("portfolio-session");
+  parentSelector.onclick = function (event) {
+    const elementClicked = event.target;
+    console.log(elementClicked.parentElement.className);
+    console.log(elementClicked);
+    if (elementClicked.parentElement.className == "row portfolio-box-padding") {
+      const userChoice = prompt("Add transaction?", "Yes or No");
+      console.log(userChoice);
+    }
   };
 };
