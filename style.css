@@ -12,6 +12,10 @@ td{
     text-align: right;
 }
 
+#table-skeleton{
+    text-align: center;
+}
+
 .align-left{
     text-align: left;
 }
@@ -22,6 +26,10 @@ td{
 
 .table{
     vertical-align:middle;
+}
+
+.transaction-table-row{
+    width: 18%; vertical-align: middle; text-align: center";
 }
 
 #logos{
@@ -40,6 +48,22 @@ td{
     font-size: 0.7rem;
     padding: 1px 2px;
     font-weight : bold;
+ }
+
+ .add-to-transaction {
+    font-size: 0.7rem;
+    padding: 1px 2px;
+    font-weight : bold;
+    color: rgb(4, 49, 100)
+ }
+
+ .submit-button {
+    font-size: 0.7rem;
+    padding: 1px 2px;
+ }
+
+ #button-padding{
+     text-align:right;
  }
 
 span.match{
@@ -64,13 +88,17 @@ span.match{
 .porto-col-width{
     font-size:0.9rem;  
     border: 1px solid rgb(0, 0, 8);
-    min-width:40%;
-    max-width:40%;
+    min-width:30%;
+    max-width:30%;
     margin: 10px 4px;
 }
 
 #index-row{
     flex-wrap:nowrap;
+}
+
+.portfolio-transaction-price, .portfolio-quantity{
+    max-width:130px
 }
 
 .index-name{
@@ -132,10 +160,17 @@ span.match{
 }
 
 .parent-container{
-    width:100%;
+    
     text-align: left;
     width:100vw;
     margin: 0 0;
+    padding: 0 0;
+}
+
+#portfolio-session{
+    width:100vw;
+    margin: 0 0;
+    padding: 0 0;
 }
 
 .portfolio-box-padding:hover{

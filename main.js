@@ -5,7 +5,7 @@ const urlOne = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "x06EF4Q0Dkac2wiIVBDnG5lfhHnEn8aT3y8sTUPg",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 
@@ -13,7 +13,7 @@ const urlTwo = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "x06EF4Q0Dkac2wiIVBDnG5lfhHnEn8aT3y8sTUPg",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 
@@ -21,13 +21,11 @@ const urlIndex = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "x06EF4Q0Dkac2wiIVBDnG5lfhHnEn8aT3y8sTUPg",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 // [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
-let sortedPortfolioIndex = [
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-];
+let sortedPortfolioIndex = [];
 const price = [];
 const volume = [];
 const marketCap = [];
@@ -120,23 +118,40 @@ axios
       }
 
       const sortedPortfolioIndexLength = sortedPortfolioIndex.length;
+      const transferredPortfolioData = JSON.parse(
+        localStorage.getItem("sortedPortfolioIndex")
+      );
+      const transferredPortfolioDataLength = transferredPortfolioData.length;
+
       if (
         window.location.pathname ==
         "/Users/kendrickwinata/GA-Project-1/portfolio.html"
       ) {
-        if (sortedPortfolioIndex.length > 0) {
-          for (let i = 0; i < sortedPortfolioIndexLength; i++) {
-            const chartID = "chart-id-" + sortedPortfolioIndex[i];
+        console.log(transferredPortfolioData);
+
+        if (transferredPortfolioDataLength > 0) {
+          for (let i = 0; i < transferredPortfolioData.length; i++) {
+            const chartID = "chart-id-" + transferredPortfolioData[i];
+            const portfolioID = "portfolio-id-" + transferredPortfolioData[i];
             addDOMtoPorfolioPage(
-              cloneConvertDataArray[`${sortedPortfolioIndex[i]}`],
+              portfolioID,
+              cloneConvertDataArray[`${transferredPortfolioData[i]}`],
               chartID,
-              dataArray[`${sortedPortfolioIndex[i]}`].symbol,
-              dataArray[`${sortedPortfolioIndex[i]}`].longName,
-              dataArray[`${sortedPortfolioIndex[i]}`].regularMarketPrice,
-              dataArray[`${sortedPortfolioIndex[i]}`].regularMarketChangePercent
+              dataArray[`${transferredPortfolioData[i]}`].symbol,
+              dataArray[`${transferredPortfolioData[i]}`].longName,
+              dataArray[`${transferredPortfolioData[i]}`].regularMarketPrice,
+              dataArray[`${transferredPortfolioData[i]}`]
+                .regularMarketChangePercent
             );
           }
-          portfolioClickButton();
+
+          addTransactionButton(
+            transferredPortfolioData,
+            transferredPortfolioDataLength,
+            dataArray
+          );
+
+          calculateProfit(transferredPortfolioDataLength);
         }
       }
 
@@ -190,6 +205,7 @@ const setColorChange = function (textChange, changeEl) {
 };
 
 const addDOMtoPorfolioPage = function (
+  portfolioID,
   convertDataArray,
   chartID,
   textSymbol,
@@ -218,6 +234,7 @@ const addDOMtoPorfolioPage = function (
 
   const colPortEl = document.createElement("div");
   colPortEl.setAttribute("class", "col");
+  colPortEl.setAttribute("id", portfolioID);
 
   const col1stRowInfo = document.createElement("div");
   col1stRowInfo.setAttribute("class", "col-symbol col-price");
@@ -233,12 +250,21 @@ const addDOMtoPorfolioPage = function (
   setColorChange(textChangePercent, col3rdRowInfo);
   const parentEl = document.getElementById("portfolio-session");
 
+  const col4thRowButton = document.createElement("button");
+  col4thRowButton.setAttribute("type", "button");
+  col4thRowButton.setAttribute(
+    "class",
+    "btn btn-light btn-sm add-to-transaction"
+  );
+  col4thRowButton.innerText = "Add transaction";
+
   colContainerEl.appendChild(rowEl);
   rowEl.appendChild(colChartEl);
   rowEl.appendChild(colPortEl);
   colPortEl.appendChild(col1stRowInfo);
   colPortEl.appendChild(col2ndRowInfo);
   colPortEl.appendChild(col3rdRowInfo);
+  colPortEl.appendChild(col4thRowButton);
 
   parentEl.appendChild(colContainerEl);
 
@@ -291,13 +317,7 @@ const addRowToDom = function (
 
   //create sub-child for checkbox
   const divEl = document.createElement("div");
-  divEl.setAttribute("class", "form-check");
-  const inputEl = document.createElement("input");
-  inputEl.setAttribute("class", "form-check-input");
-  inputEl.setAttribute("type", "checkbox");
-  inputEl.setAttribute("value", "");
-  inputEl.setAttribute("id", "flexCheckDefault");
-  divEl.appendChild(inputEl);
+  createChecklist(divEl);
   rowEl.appendChild(divEl);
 
   //create sub-child for a href at symbol tag
@@ -382,16 +402,6 @@ const checkUncheck = function () {
   console.log(tableBody.checked);
 };
 
-// nameEl.innerText = textName;
-//   priceEl.innerText = textPrice;
-//   changeEl.innerText = textChange;
-//   changePercentEl.innerText = `${textChangePercent}%`;
-//   volumeEl.innerText = textVolume;
-//   averageVolumeEl.innerText = textAverageVolume;
-//   marketCapEl.innerText = textMarketCap;
-//   peEl.innerText = textPE;
-//   pbEl.innerText = textPB;
-
 const convertData = function (data1, data2, data3, data4, data5) {
   const groupArrayData = [];
   const dataLength = data1.length;
@@ -445,6 +455,16 @@ const makeChart = function (chartData, currentID) {
   const myChart = new Chart(document.getElementById(currentID), config);
 };
 
+const createChecklist = function (divEl) {
+  divEl.setAttribute("class", "form-check");
+  const inputEl = document.createElement("input");
+  inputEl.setAttribute("class", "form-check-input");
+  inputEl.setAttribute("type", "checkbox");
+  inputEl.setAttribute("value", "");
+  inputEl.setAttribute("id", "flexCheckDefault");
+  divEl.appendChild(inputEl);
+};
+
 const scoringSystem = function (array) {
   const arrayLength = array.length;
   for (let i = 0; i < arrayLength; i++) {
@@ -460,21 +480,6 @@ const scoringSystem = function (array) {
   return mapArray;
 };
 
-// const invertScoringSystem = function (array) {
-//   // const sum = array.reduce((a, b) => a + b, 0);
-
-//   const arrayLength = array.length;
-//   for (let i = 0; i < arrayLength; i++) {
-//     if (isNaN(Number(array[i])) === true) {
-//       array[i] = 0;
-//     }
-//   }
-//   const max = Math.max(...array);
-//   const mapArray = array.map((item) => 100 - Math.floor((item / max) * 75));
-//   console.log(max);
-//   console.log(mapArray);
-//   return mapArray;
-// };
 let allChecklist = "";
 let allChecklistLength = "";
 const portfolioArrayIndex = [];
@@ -509,16 +514,6 @@ const checkButton = function () {
 
       console.log(status);
     }
-
-    // if (elementClicked.id == "add-to-portfolio") {
-    //   for (let i = 0; i < allChecklistLength; i++) {
-    //     if (allChecklist[i].checked == true) {
-    //       portfolioArrayIndex.push(i);
-    //     }
-    //   }
-    // }
-
-    // console.log(portfolioArrayIndex);
   };
 };
 
@@ -540,18 +535,162 @@ const addToPortfolio = function (item) {
     sortedPortfolioIndex = [...new Set(portfolioArrayIndex)];
     console.log(portfolioArrayIndex);
     console.log(sortedPortfolioIndex);
+    localStorage.setItem(
+      "sortedPortfolioIndex",
+      JSON.stringify(sortedPortfolioIndex)
+    );
   };
 };
 
-const portfolioClickButton = function () {
+const addTransactionButton = function (
+  transferredPortfolioData,
+  transferredPortfolioDataLength,
+  dataArray
+) {
+  const storePortfolioData = [];
+  const cloneStorePortfolioData = [];
+
   const parentSelector = document.getElementById("portfolio-session");
   parentSelector.onclick = function (event) {
     const elementClicked = event.target;
-    console.log(elementClicked.parentElement.className);
-    console.log(elementClicked);
-    if (elementClicked.parentElement.className == "row portfolio-box-padding") {
-      const userChoice = prompt("Add transaction?", "Yes or No");
-      console.log(userChoice);
+    const transactionButton = elementClicked.parentElement.id;
+    console.log(transactionButton);
+    if (elementClicked.className == "btn btn-light btn-sm add-to-transaction") {
+      alert("Stock added to transaction");
+    }
+    console.log(transferredPortfolioData);
+    for (let i = 0; i < transferredPortfolioDataLength; i++) {
+      if (transactionButton == "portfolio-id-" + transferredPortfolioData[i]) {
+        storePortfolioData.push(transferredPortfolioData[i]);
+        cloneStorePortfolioData.push(transferredPortfolioData[i]);
+      }
+    }
+    console.log(storePortfolioData);
+    console.log(cloneStorePortfolioData);
+
+    const popIndex = storePortfolioData.pop();
+    const parentSelector = document.getElementById("table-body");
+    const childEl = document.createElement("tr");
+    childEl.setAttribute("id", "table-skeleton");
+
+    const col1stEl = document.createElement("th");
+    col1stEl.setAttribute("scope", "row");
+    const divEl = document.createElement("div");
+    createChecklist(divEl);
+    col1stEl.appendChild(divEl);
+
+    const symbolEl = document.createElement("td");
+    symbolEl.setAttribute("class", "portfolio-symbol");
+
+    const nameEl = document.createElement("td");
+    nameEl.setAttribute("class", "portfolio-stock-name");
+
+    const currentPriceEl = document.createElement("td");
+    currentPriceEl.setAttribute("class", "portfolio-current-price");
+
+    const orderDateEl = document.createElement("td");
+    orderDateEl.setAttribute("class", "portfolio-order-date");
+
+    const quantityEl = document.createElement("td");
+    quantityEl.setAttribute("class", "portfolio-quantity");
+    quantityEl.setAttribute("id", `portfolio-quantity-${popIndex}`);
+
+    const transactionPriceEl = document.createElement("td");
+    transactionPriceEl.setAttribute("class", "portfolio-transaction-price");
+    transactionPriceEl.setAttribute(
+      "id",
+      `portfolio-transaction-price-${popIndex}`
+    );
+
+    const settlementAmountEl = document.createElement("td");
+    settlementAmountEl.setAttribute("class", "portfolio-settlement-amount");
+    settlementAmountEl.setAttribute(
+      "id",
+      `portfolio-settlement-amount-${popIndex}`
+    );
+
+    const profitEl = document.createElement("td");
+    profitEl.setAttribute("class", "portfolio-profit");
+    profitEl.setAttribute("id", `portfolio-profit-${popIndex}`);
+
+    childEl.appendChild(col1stEl);
+    childEl.appendChild(symbolEl);
+    childEl.appendChild(nameEl);
+    childEl.appendChild(currentPriceEl);
+    childEl.appendChild(orderDateEl);
+    childEl.appendChild(quantityEl);
+    childEl.appendChild(transactionPriceEl);
+    childEl.appendChild(settlementAmountEl);
+    childEl.appendChild(profitEl);
+
+    console.log(popIndex);
+    symbolEl.innerText = dataArray[popIndex].symbol;
+    nameEl.innerText = dataArray[popIndex].longName;
+    currentPriceEl.innerText = "$" + dataArray[popIndex].regularMarketPrice;
+
+    const inputDate = document.createElement("input");
+    inputDate.setAttribute("type", "date");
+    orderDateEl.appendChild(inputDate);
+
+    const inputQuantity = document.createElement("input");
+    inputQuantity.setAttribute("id", `input-quantity-${popIndex}`);
+    inputQuantity.setAttribute("size", "15");
+    inputQuantity.setAttribute("style", "text-align:right");
+    quantityEl.appendChild(inputQuantity);
+
+    const inputTransactionPrice = document.createElement("input");
+    inputTransactionPrice.setAttribute("id", `input-transaction-${popIndex}`);
+    inputTransactionPrice.setAttribute("size", "15");
+    inputTransactionPrice.setAttribute("style", "text-align:right");
+    transactionPriceEl.appendChild(inputTransactionPrice);
+
+    parentSelector.appendChild(childEl);
+
+    calculateProfit(cloneStorePortfolioData, dataArray);
+  };
+};
+
+const calculateProfit = function (cloneStorePortfolioData, dataArray) {
+  const parentSelector = document.getElementById("button-padding");
+
+  parentSelector.onclick = function (event) {
+    const elementClicked = event.target;
+    if (elementClicked.id == "submit-button") {
+      for (let i = 0; i < cloneStorePortfolioData.length; i++) {
+        const parentElement = document.getElementById("table-body");
+        const childEl = document.getElementById("table-skeleton");
+
+        const textSettlementAmount = document.getElementById(
+          `portfolio-settlement-amount-${cloneStorePortfolioData[i]}`
+        );
+
+        const quantityValue = document.getElementById(
+          `input-quantity-${cloneStorePortfolioData[i]}`
+        ).value;
+        console.log(quantityValue);
+
+        const transactionValue = document.getElementById(
+          `input-transaction-${cloneStorePortfolioData[i]}`
+        ).value;
+        console.log(transactionValue);
+
+        const calculateSettlementAmount =
+          Number(quantityValue) * Number(transactionValue);
+
+        textSettlementAmount.innerText = "$" + calculateSettlementAmount;
+        const currentPrice =
+          dataArray[`${cloneStorePortfolioData[i]}`].regularMarketPrice;
+
+        const calculateProfit = roundDecimal(
+          Number(quantityValue) * (currentPrice - Number(transactionValue))
+        );
+
+        const profitAmount = document.getElementById(
+          `portfolio-profit-${cloneStorePortfolioData[i]}`
+        );
+        setColorChange(calculateProfit, profitAmount);
+        profitAmount.innerText = "$" + calculateProfit;
+      }
     }
   };
 };
