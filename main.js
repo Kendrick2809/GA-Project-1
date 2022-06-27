@@ -5,7 +5,7 @@ const urlOne = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
+    "X-API-KEY": "qZ6IASPHOw1xXMAKQPiW38h8UwLdmV3t1zlweeB8",
   },
 };
 
@@ -13,7 +13,7 @@ const urlTwo = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
+    "X-API-KEY": "qZ6IASPHOw1xXMAKQPiW38h8UwLdmV3t1zlweeB8",
   },
 };
 
@@ -21,7 +21,7 @@ const urlIndex = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
+    "X-API-KEY": "qZ6IASPHOw1xXMAKQPiW38h8UwLdmV3t1zlweeB8",
   },
 };
 // [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
@@ -31,6 +31,8 @@ const volume = [];
 const marketCap = [];
 const PE = [];
 const PB = [];
+const storePortfolioData = [];
+const cloneStorePortfolioData = [];
 
 const requestOne = axios.request(urlOne);
 const requestTwo = axios.request(urlTwo);
@@ -151,7 +153,7 @@ axios
             dataArray
           );
 
-          calculateProfit(transferredPortfolioDataLength);
+          submitButtonFunction(transferredPortfolioDataLength);
         }
       }
 
@@ -541,15 +543,13 @@ const addToPortfolio = function (item) {
     );
   };
 };
+console.log(cloneStorePortfolioData);
 
 const addTransactionButton = function (
   transferredPortfolioData,
   transferredPortfolioDataLength,
   dataArray
 ) {
-  const storePortfolioData = [];
-  const cloneStorePortfolioData = [];
-
   const parentSelector = document.getElementById("portfolio-session");
   parentSelector.onclick = function (event) {
     const elementClicked = event.target;
@@ -567,11 +567,12 @@ const addTransactionButton = function (
     }
     console.log(storePortfolioData);
     console.log(cloneStorePortfolioData);
+    const transactionArrayLength = cloneStorePortfolioData.length;
 
     const popIndex = storePortfolioData.pop();
     const parentSelector = document.getElementById("table-body");
     const childEl = document.createElement("tr");
-    childEl.setAttribute("id", "table-skeleton");
+    childEl.setAttribute("id", `table-skeleton-${transactionArrayLength}`);
 
     const col1stEl = document.createElement("th");
     col1stEl.setAttribute("scope", "row");
@@ -593,25 +594,28 @@ const addTransactionButton = function (
 
     const quantityEl = document.createElement("td");
     quantityEl.setAttribute("class", "portfolio-quantity");
-    quantityEl.setAttribute("id", `portfolio-quantity-${popIndex}`);
+    quantityEl.setAttribute(
+      "id",
+      `portfolio-quantity-${cloneStorePortfolioData}`
+    );
 
     const transactionPriceEl = document.createElement("td");
     transactionPriceEl.setAttribute("class", "portfolio-transaction-price");
     transactionPriceEl.setAttribute(
       "id",
-      `portfolio-transaction-price-${popIndex}`
+      `portfolio-transaction-price-${transactionArrayLength}`
     );
 
     const settlementAmountEl = document.createElement("td");
     settlementAmountEl.setAttribute("class", "portfolio-settlement-amount");
     settlementAmountEl.setAttribute(
       "id",
-      `portfolio-settlement-amount-${popIndex}`
+      `portfolio-settlement-amount-${transactionArrayLength}`
     );
 
     const profitEl = document.createElement("td");
     profitEl.setAttribute("class", "portfolio-profit");
-    profitEl.setAttribute("id", `portfolio-profit-${popIndex}`);
+    profitEl.setAttribute("id", `portfolio-profit-${transactionArrayLength}`);
 
     childEl.appendChild(col1stEl);
     childEl.appendChild(symbolEl);
@@ -633,50 +637,89 @@ const addTransactionButton = function (
     orderDateEl.appendChild(inputDate);
 
     const inputQuantity = document.createElement("input");
-    inputQuantity.setAttribute("id", `input-quantity-${popIndex}`);
+    inputQuantity.setAttribute(
+      "id",
+      `input-quantity-${transactionArrayLength}`
+    );
     inputQuantity.setAttribute("size", "15");
     inputQuantity.setAttribute("style", "text-align:right");
     quantityEl.appendChild(inputQuantity);
 
     const inputTransactionPrice = document.createElement("input");
-    inputTransactionPrice.setAttribute("id", `input-transaction-${popIndex}`);
+    inputTransactionPrice.setAttribute(
+      "id",
+      `input-transaction-${transactionArrayLength}`
+    );
     inputTransactionPrice.setAttribute("size", "15");
     inputTransactionPrice.setAttribute("style", "text-align:right");
     transactionPriceEl.appendChild(inputTransactionPrice);
 
     parentSelector.appendChild(childEl);
 
-    calculateProfit(cloneStorePortfolioData, dataArray);
+    submitButtonFunction(
+      cloneStorePortfolioData,
+      dataArray,
+      transactionArrayLength
+    );
   };
 };
 
-const calculateProfit = function (cloneStorePortfolioData, dataArray) {
+const submitButtonFunction = function (
+  cloneStorePortfolioData,
+  dataArray,
+  transactionArrayLength
+) {
   const parentSelector = document.getElementById("button-padding");
 
   parentSelector.onclick = function (event) {
     const elementClicked = event.target;
+    console.log(elementClicked);
+    const transactionChecklist = document.querySelectorAll("#flexCheckDefault");
+    const transactionChecklistLength = transactionChecklist.length;
+    const arrTransaction = [];
+    for (let i = 0; i < transactionArrayLength; i++) {
+      arrTransaction.push(i + 1);
+      console.log(arrTransaction);
+    }
+    if (elementClicked.id == "remove-button") {
+      for (let i = 0; i < transactionChecklistLength; i++) {
+        if (transactionChecklist[i].checked == true) {
+          const itemToRemove = document.getElementById(
+            `table-skeleton-${arrTransaction[i]}`
+          );
+          console.log(itemToRemove);
+          itemToRemove.remove();
+
+          arrTransaction.splice(i, 1);
+          console.log(arrTransaction);
+        }
+      }
+    }
+
     if (elementClicked.id == "submit-button") {
-      for (let i = 0; i < cloneStorePortfolioData.length; i++) {
+      for (let i = 0; i < transactionChecklistLength; i++) {
         const parentElement = document.getElementById("table-body");
-        const childEl = document.getElementById("table-skeleton");
+        const childEl = document.getElementById(
+          `table-skeleton-${arrTransaction[i]}`
+        );
 
         const textSettlementAmount = document.getElementById(
-          `portfolio-settlement-amount-${cloneStorePortfolioData[i]}`
+          `portfolio-settlement-amount-${arrTransaction[i]}`
         );
 
         const quantityValue = document.getElementById(
-          `input-quantity-${cloneStorePortfolioData[i]}`
+          `input-quantity-${arrTransaction[i]}`
         ).value;
         console.log(quantityValue);
 
         const transactionValue = document.getElementById(
-          `input-transaction-${cloneStorePortfolioData[i]}`
+          `input-transaction-${arrTransaction[i]}`
         ).value;
         console.log(transactionValue);
 
         const calculateSettlementAmount =
           Number(quantityValue) * Number(transactionValue);
-
+        textSettlementAmount.innerText = "";
         textSettlementAmount.innerText = "$" + calculateSettlementAmount;
         const currentPrice =
           dataArray[`${cloneStorePortfolioData[i]}`].regularMarketPrice;
@@ -686,11 +729,15 @@ const calculateProfit = function (cloneStorePortfolioData, dataArray) {
         );
 
         const profitAmount = document.getElementById(
-          `portfolio-profit-${cloneStorePortfolioData[i]}`
+          `portfolio-profit-${arrTransaction[i]}`
         );
         setColorChange(calculateProfit, profitAmount);
+        profitAmount.innerText = "";
         profitAmount.innerText = "$" + calculateProfit;
+
+        console.log(calculateProfit);
       }
     }
+    console.log(cloneStorePortfolioData);
   };
 };
