@@ -8,7 +8,7 @@ const urlOne = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
+    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
   },
 };
 
@@ -16,7 +16,7 @@ const urlTwo = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
+    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
   },
 };
 
@@ -24,7 +24,7 @@ const urlIndex = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
+    "X-API-KEY": "EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI",
   },
 };
 
@@ -88,7 +88,10 @@ axios
 
       const indexArrayLength = dataArrayIndex.length;
 
-      if (window.location.pathname == "/GA-Project-1/index.html") {
+      if (
+        window.location.pathname ==
+        "/Users/kendrickwinata/GA-Project-1/index.html"
+      ) {
         //add index row to DOM
         for (let i = 0; i < indexArrayLength; i++) {
           addIndexRowToDom(
@@ -127,13 +130,16 @@ axios
         addToPortfolio();
       }
 
-      //parse the portfolio item
-      const transferredPortfolioData = JSON.parse(
-        localStorage.getItem("sortedPortfolioIndex")
-      );
-      const transferredPortfolioDataLength = transferredPortfolioData.length;
+      if (
+        window.location.pathname ==
+        "/Users/kendrickwinata/GA-Project-1/portfolio.html"
+      ) {
+        //parse the portfolio item
+        const transferredPortfolioData = JSON.parse(
+          localStorage.getItem("sortedPortfolioIndex")
+        );
+        const transferredPortfolioDataLength = transferredPortfolioData.length;
 
-      if (window.location.pathname == "/GA-Project-1/portfolio.html") {
         console.log(transferredPortfolioData);
 
         if (transferredPortfolioDataLength > 0) {
