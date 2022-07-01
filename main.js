@@ -88,10 +88,7 @@ axios
 
       const indexArrayLength = dataArrayIndex.length;
 
-      if (
-        window.location.pathname ==
-        "/Users/kendrickwinata/GA-Project-1/index.html"
-      ) {
+      if (window.location.pathname == "/GA-Project-1/index.html") {
         //add index row to DOM
         for (let i = 0; i < indexArrayLength; i++) {
           addIndexRowToDom(
@@ -136,10 +133,7 @@ axios
       );
       const transferredPortfolioDataLength = transferredPortfolioData.length;
 
-      if (
-        window.location.pathname ==
-        "/Users/kendrickwinata/GA-Project-1/portfolio.html"
-      ) {
+      if (window.location.pathname == "/GA-Project-1/portfolio.html") {
         console.log(transferredPortfolioData);
 
         if (transferredPortfolioDataLength > 0) {
