@@ -1,11 +1,14 @@
 // const axios = require("axios").default;
 const cacheAvailable = "caches" in self;
 
+//EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI
+//Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz
+
 const urlOne = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "qZ6IASPHOw1xXMAKQPiW38h8UwLdmV3t1zlweeB8",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 
@@ -13,7 +16,7 @@ const urlTwo = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "qZ6IASPHOw1xXMAKQPiW38h8UwLdmV3t1zlweeB8",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
 
@@ -21,10 +24,10 @@ const urlIndex = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "qZ6IASPHOw1xXMAKQPiW38h8UwLdmV3t1zlweeB8",
+    "X-API-KEY": "Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz",
   },
 };
-// [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
+
 let sortedPortfolioIndex = [];
 const price = [];
 const volume = [];
@@ -34,10 +37,12 @@ const PB = [];
 const storePortfolioData = [];
 const cloneStorePortfolioData = [];
 
+//request url API data with axios
 const requestOne = axios.request(urlOne);
 const requestTwo = axios.request(urlTwo);
 const requestIndex = axios.request(urlIndex);
 
+//run axios promises
 axios
   .all([requestOne, requestTwo, requestIndex])
   .then(
@@ -46,14 +51,15 @@ axios
       const responseTwo = responses[1];
       const responseThree = responses[2];
 
+      //create response for data Array
       console.log(responseOne, responseTwo);
       const dataArray1 = responseOne.data.quoteResponse.result;
       const dataArray2 = responseTwo.data.quoteResponse.result;
       const dataArrayIndex = responseThree.data.quoteResponse.result;
       const dataArray = [...dataArray1, ...dataArray2];
-
       const dataArrayLength = dataArray.length;
 
+      //create array for each elements
       for (let i = 0; i < dataArrayLength; i++) {
         price.push(dataArray[i].regularMarketPrice);
         volume.push(dataArray[i].regularMarketVolume);
@@ -62,12 +68,14 @@ axios
         PB.push(dataArray[i].priceToBook);
       }
 
+      //calculate score of each elements
       const priceChartData = scoringSystem(price);
       const volumeChartData = scoringSystem(volume);
       const marketCapChartData = scoringSystem(marketCap);
       const PEChartData = scoringSystem(PE);
       const PBChartData = scoringSystem(PB);
 
+      //convert data that will be used in radar chart
       const convertDataArray = convertData(
         priceChartData,
         volumeChartData,
@@ -78,14 +86,13 @@ axios
 
       const cloneConvertDataArray = convertDataArray.slice();
 
-      console.log(cloneConvertDataArray);
-
       const indexArrayLength = dataArrayIndex.length;
 
       if (
         window.location.pathname ==
         "/Users/kendrickwinata/GA-Project-1/index.html"
       ) {
+        //add index row to DOM
         for (let i = 0; i < indexArrayLength; i++) {
           addIndexRowToDom(
             dataArrayIndex[i].shortName,
@@ -95,6 +102,7 @@ axios
           );
         }
 
+        //add stocks table
         for (let i = 0; i < dataArrayLength; i++) {
           const currentID = `convert-data-${i}`;
           addRowToDom(
@@ -115,11 +123,14 @@ axios
           );
         }
 
+        //check checklist button to activate "add to portfolio" function
         checkButton();
+
+        //store portfolio in an array
         addToPortfolio();
       }
 
-      const sortedPortfolioIndexLength = sortedPortfolioIndex.length;
+      //parse the portfolio item
       const transferredPortfolioData = JSON.parse(
         localStorage.getItem("sortedPortfolioIndex")
       );
@@ -490,11 +501,6 @@ const checkButton = function () {
   const parentSelector = document.getElementById("table-body");
   parentSelector.onclick = function (event) {
     const elementClicked = event.target;
-    // const elementWithEventHandler = event.currentTarget;
-
-    console.log(elementClicked.id);
-    console.log(event.currentTarget);
-    console.log(elementClicked.parentElement);
 
     if (elementClicked.id == "flexCheckDefault") {
       allChecklist = document.querySelectorAll("#flexCheckDefault");
@@ -520,8 +526,8 @@ const checkButton = function () {
 };
 
 const addToPortfolio = function (item) {
+  //store to array for portfolio added
   const addToPortoParentSelector = document.getElementById("add-to-porto-row");
-  console.log(addToPortoParentSelector);
   addToPortoParentSelector.onclick = function (event) {
     const elementClicked = event.target;
     if (elementClicked.id == "add-to-portfolio") {
@@ -537,13 +543,14 @@ const addToPortfolio = function (item) {
     sortedPortfolioIndex = [...new Set(portfolioArrayIndex)];
     console.log(portfolioArrayIndex);
     console.log(sortedPortfolioIndex);
+
+    //set item to local storage
     localStorage.setItem(
       "sortedPortfolioIndex",
       JSON.stringify(sortedPortfolioIndex)
     );
   };
 };
-console.log(cloneStorePortfolioData);
 
 const addTransactionButton = function (
   transferredPortfolioData,
@@ -551,124 +558,120 @@ const addTransactionButton = function (
   dataArray
 ) {
   const parentSelector = document.getElementById("portfolio-session");
+  const transactionArray = [];
   parentSelector.onclick = function (event) {
     const elementClicked = event.target;
     const transactionButton = elementClicked.parentElement.id;
     console.log(transactionButton);
     if (elementClicked.className == "btn btn-light btn-sm add-to-transaction") {
       alert("Stock added to transaction");
-    }
-    console.log(transferredPortfolioData);
-    for (let i = 0; i < transferredPortfolioDataLength; i++) {
-      if (transactionButton == "portfolio-id-" + transferredPortfolioData[i]) {
-        storePortfolioData.push(transferredPortfolioData[i]);
-        cloneStorePortfolioData.push(transferredPortfolioData[i]);
+      console.log(transferredPortfolioData);
+      for (let i = 0; i < transferredPortfolioDataLength; i++) {
+        if (
+          transactionButton ==
+          "portfolio-id-" + transferredPortfolioData[i]
+        ) {
+          storePortfolioData.push(transferredPortfolioData[i]);
+          cloneStorePortfolioData.push(transferredPortfolioData[i]);
+        }
+      }
+      console.log(storePortfolioData);
+      console.log(cloneStorePortfolioData);
+
+      const popIndex = storePortfolioData.pop();
+
+      console.log(transactionArray);
+      if (transactionArray.includes(popIndex)) {
+        alert("this stock has been added in the transaction list");
+      } else {
+        transactionArray.push(popIndex);
+        const parentSelector = document.getElementById("table-body");
+        const childEl = document.createElement("tr");
+        childEl.setAttribute("id", `table-skeleton-${popIndex}`);
+
+        const col1stEl = document.createElement("th");
+        col1stEl.setAttribute("scope", "row");
+        const divEl = document.createElement("div");
+        createChecklist(divEl);
+        col1stEl.appendChild(divEl);
+
+        const symbolEl = document.createElement("td");
+        symbolEl.setAttribute("class", "portfolio-symbol");
+
+        const nameEl = document.createElement("td");
+        nameEl.setAttribute("class", "portfolio-stock-name");
+
+        const currentPriceEl = document.createElement("td");
+        currentPriceEl.setAttribute("class", "portfolio-current-price");
+
+        const orderDateEl = document.createElement("td");
+        orderDateEl.setAttribute("class", "portfolio-order-date");
+
+        const quantityEl = document.createElement("td");
+        quantityEl.setAttribute("class", "portfolio-quantity");
+        quantityEl.setAttribute("id", `portfolio-quantity-${popIndex}`);
+
+        const transactionPriceEl = document.createElement("td");
+        transactionPriceEl.setAttribute("class", "portfolio-transaction-price");
+        transactionPriceEl.setAttribute(
+          "id",
+          `portfolio-transaction-price-${popIndex}`
+        );
+
+        const settlementAmountEl = document.createElement("td");
+        settlementAmountEl.setAttribute("class", "portfolio-settlement-amount");
+        settlementAmountEl.setAttribute(
+          "id",
+          `portfolio-settlement-amount-${popIndex}`
+        );
+
+        const profitEl = document.createElement("td");
+        profitEl.setAttribute("class", "portfolio-profit");
+        profitEl.setAttribute("id", `portfolio-profit-${popIndex}`);
+
+        childEl.appendChild(col1stEl);
+        childEl.appendChild(symbolEl);
+        childEl.appendChild(nameEl);
+        childEl.appendChild(currentPriceEl);
+        childEl.appendChild(orderDateEl);
+        childEl.appendChild(quantityEl);
+        childEl.appendChild(transactionPriceEl);
+        childEl.appendChild(settlementAmountEl);
+        childEl.appendChild(profitEl);
+
+        console.log(popIndex);
+        symbolEl.innerText = dataArray[popIndex].symbol;
+        nameEl.innerText = dataArray[popIndex].longName;
+        currentPriceEl.innerText = "$" + dataArray[popIndex].regularMarketPrice;
+
+        const inputDate = document.createElement("input");
+        inputDate.setAttribute("type", "date");
+        orderDateEl.appendChild(inputDate);
+
+        const inputQuantity = document.createElement("input");
+        inputQuantity.setAttribute("id", `input-quantity-${popIndex}`);
+        inputQuantity.setAttribute("size", "15");
+        inputQuantity.setAttribute("style", "text-align:right");
+        quantityEl.appendChild(inputQuantity);
+
+        const inputTransactionPrice = document.createElement("input");
+        inputTransactionPrice.setAttribute(
+          "id",
+          `input-transaction-${popIndex}`
+        );
+        inputTransactionPrice.setAttribute("size", "15");
+        inputTransactionPrice.setAttribute("style", "text-align:right");
+        transactionPriceEl.appendChild(inputTransactionPrice);
+
+        parentSelector.appendChild(childEl);
+
+        submitButtonFunction(cloneStorePortfolioData, dataArray);
       }
     }
-    console.log(storePortfolioData);
-    console.log(cloneStorePortfolioData);
-    const transactionArrayLength = cloneStorePortfolioData.length;
-
-    const popIndex = storePortfolioData.pop();
-    const parentSelector = document.getElementById("table-body");
-    const childEl = document.createElement("tr");
-    childEl.setAttribute("id", `table-skeleton-${transactionArrayLength}`);
-
-    const col1stEl = document.createElement("th");
-    col1stEl.setAttribute("scope", "row");
-    const divEl = document.createElement("div");
-    createChecklist(divEl);
-    col1stEl.appendChild(divEl);
-
-    const symbolEl = document.createElement("td");
-    symbolEl.setAttribute("class", "portfolio-symbol");
-
-    const nameEl = document.createElement("td");
-    nameEl.setAttribute("class", "portfolio-stock-name");
-
-    const currentPriceEl = document.createElement("td");
-    currentPriceEl.setAttribute("class", "portfolio-current-price");
-
-    const orderDateEl = document.createElement("td");
-    orderDateEl.setAttribute("class", "portfolio-order-date");
-
-    const quantityEl = document.createElement("td");
-    quantityEl.setAttribute("class", "portfolio-quantity");
-    quantityEl.setAttribute(
-      "id",
-      `portfolio-quantity-${cloneStorePortfolioData}`
-    );
-
-    const transactionPriceEl = document.createElement("td");
-    transactionPriceEl.setAttribute("class", "portfolio-transaction-price");
-    transactionPriceEl.setAttribute(
-      "id",
-      `portfolio-transaction-price-${transactionArrayLength}`
-    );
-
-    const settlementAmountEl = document.createElement("td");
-    settlementAmountEl.setAttribute("class", "portfolio-settlement-amount");
-    settlementAmountEl.setAttribute(
-      "id",
-      `portfolio-settlement-amount-${transactionArrayLength}`
-    );
-
-    const profitEl = document.createElement("td");
-    profitEl.setAttribute("class", "portfolio-profit");
-    profitEl.setAttribute("id", `portfolio-profit-${transactionArrayLength}`);
-
-    childEl.appendChild(col1stEl);
-    childEl.appendChild(symbolEl);
-    childEl.appendChild(nameEl);
-    childEl.appendChild(currentPriceEl);
-    childEl.appendChild(orderDateEl);
-    childEl.appendChild(quantityEl);
-    childEl.appendChild(transactionPriceEl);
-    childEl.appendChild(settlementAmountEl);
-    childEl.appendChild(profitEl);
-
-    console.log(popIndex);
-    symbolEl.innerText = dataArray[popIndex].symbol;
-    nameEl.innerText = dataArray[popIndex].longName;
-    currentPriceEl.innerText = "$" + dataArray[popIndex].regularMarketPrice;
-
-    const inputDate = document.createElement("input");
-    inputDate.setAttribute("type", "date");
-    orderDateEl.appendChild(inputDate);
-
-    const inputQuantity = document.createElement("input");
-    inputQuantity.setAttribute(
-      "id",
-      `input-quantity-${transactionArrayLength}`
-    );
-    inputQuantity.setAttribute("size", "15");
-    inputQuantity.setAttribute("style", "text-align:right");
-    quantityEl.appendChild(inputQuantity);
-
-    const inputTransactionPrice = document.createElement("input");
-    inputTransactionPrice.setAttribute(
-      "id",
-      `input-transaction-${transactionArrayLength}`
-    );
-    inputTransactionPrice.setAttribute("size", "15");
-    inputTransactionPrice.setAttribute("style", "text-align:right");
-    transactionPriceEl.appendChild(inputTransactionPrice);
-
-    parentSelector.appendChild(childEl);
-
-    submitButtonFunction(
-      cloneStorePortfolioData,
-      dataArray,
-      transactionArrayLength
-    );
   };
 };
 
-const submitButtonFunction = function (
-  cloneStorePortfolioData,
-  dataArray,
-  transactionArrayLength
-) {
+const submitButtonFunction = function (cloneStorePortfolioData, dataArray) {
   const parentSelector = document.getElementById("button-padding");
 
   parentSelector.onclick = function (event) {
@@ -676,44 +679,39 @@ const submitButtonFunction = function (
     console.log(elementClicked);
     const transactionChecklist = document.querySelectorAll("#flexCheckDefault");
     const transactionChecklistLength = transactionChecklist.length;
-    const arrTransaction = [];
-    for (let i = 0; i < transactionArrayLength; i++) {
-      arrTransaction.push(i + 1);
-      console.log(arrTransaction);
-    }
+
     if (elementClicked.id == "remove-button") {
       for (let i = 0; i < transactionChecklistLength; i++) {
         if (transactionChecklist[i].checked == true) {
           const itemToRemove = document.getElementById(
-            `table-skeleton-${arrTransaction[i]}`
+            `table-skeleton-${cloneStorePortfolioData[i]}`
           );
           console.log(itemToRemove);
           itemToRemove.remove();
-
-          arrTransaction.splice(i, 1);
-          console.log(arrTransaction);
+          cloneStorePortfolioData.splice(i, 1);
+          console.log(cloneStorePortfolioData);
         }
       }
     }
 
     if (elementClicked.id == "submit-button") {
-      for (let i = 0; i < transactionChecklistLength; i++) {
+      for (let i = 0; i < cloneStorePortfolioData.length; i++) {
         const parentElement = document.getElementById("table-body");
         const childEl = document.getElementById(
-          `table-skeleton-${arrTransaction[i]}`
+          `table-skeleton-${cloneStorePortfolioData[i]}`
         );
 
         const textSettlementAmount = document.getElementById(
-          `portfolio-settlement-amount-${arrTransaction[i]}`
+          `portfolio-settlement-amount-${cloneStorePortfolioData[i]}`
         );
 
         const quantityValue = document.getElementById(
-          `input-quantity-${arrTransaction[i]}`
+          `input-quantity-${cloneStorePortfolioData[i]}`
         ).value;
         console.log(quantityValue);
 
         const transactionValue = document.getElementById(
-          `input-transaction-${arrTransaction[i]}`
+          `input-transaction-${cloneStorePortfolioData[i]}`
         ).value;
         console.log(transactionValue);
 
@@ -728,16 +726,17 @@ const submitButtonFunction = function (
           Number(quantityValue) * (currentPrice - Number(transactionValue))
         );
 
+        const calculateProfitPercentage = roundDecimal(
+          (currentPrice / Number(transactionValue)) * 100 - 100
+        );
+
         const profitAmount = document.getElementById(
-          `portfolio-profit-${arrTransaction[i]}`
+          `portfolio-profit-${cloneStorePortfolioData[i]}`
         );
         setColorChange(calculateProfit, profitAmount);
         profitAmount.innerText = "";
-        profitAmount.innerText = "$" + calculateProfit;
-
-        console.log(calculateProfit);
+        profitAmount.innerText = `$${calculateProfit} (${calculateProfitPercentage}%)`;
       }
     }
-    console.log(cloneStorePortfolioData);
   };
 };
