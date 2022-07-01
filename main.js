@@ -3,6 +3,7 @@ const cacheAvailable = "caches" in self;
 
 //EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI
 //Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz
+//rZRm3oFBsQ1OL2Ao0OBDD3Q1dgCqyQAB9Un2VSx4
 
 const urlOne = {
   method: "GET",
@@ -90,7 +91,8 @@ axios
 
       if (
         window.location.pathname ==
-        "/Users/kendrickwinata/GA-Project-1/index.html"
+          "/Users/kendrickwinata/GA-Project-1/index.html" ||
+        window.location.pathname == "/GA-Project-1/index.html"
       ) {
         //add index row to DOM
         for (let i = 0; i < indexArrayLength; i++) {
@@ -132,7 +134,8 @@ axios
 
       if (
         window.location.pathname ==
-        "/Users/kendrickwinata/GA-Project-1/portfolio.html"
+          "/Users/kendrickwinata/GA-Project-1/portfolio.html" ||
+        window.location.pathname == "/GA-Project-1/portfolio.html"
       ) {
         //parse the portfolio item
         const transferredPortfolioData = JSON.parse(
