@@ -92,7 +92,7 @@ axios
       if (
         window.location.pathname ==
           "/Users/kendrickwinata/GA-Project-1/index.html" ||
-        window.location.pathname == "/GA-Project-1/index.html"
+        window.location.pathname == "/GA-Project-1/"
       ) {
         //add index row to DOM
         for (let i = 0; i < indexArrayLength; i++) {
@@ -135,7 +135,7 @@ axios
       if (
         window.location.pathname ==
           "/Users/kendrickwinata/GA-Project-1/portfolio.html" ||
-        window.location.pathname == "/GA-Project-1/portfolio.html"
+        window.location.pathname == "/GA-Project-1/"
       ) {
         //parse the portfolio item
         const transferredPortfolioData = JSON.parse(
