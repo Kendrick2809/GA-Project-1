@@ -4,12 +4,13 @@ const cacheAvailable = "caches" in self;
 //EVdvYgyn9Y5cAdIDwp2El8bPs8niF3Sw6Nw0WnmI
 //Y9UUJuV4uQ5fn8Ocs8OeZ7NJsDRF5mRu6wsti1hz
 //rZRm3oFBsQ1OL2Ao0OBDD3Q1dgCqyQAB9Un2VSx4
+//5tpO5lBsKp86sNHyMQDvib4cJ0er5Te4T9Ffrd6g
 
 const urlOne = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=C52.SI%2CC6L.SI%2CG07.SI%2CC07.SI%2CU11.SI%2CS68.SI%2CZ74.SI%2CD05.SI%2CS58.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "rZRm3oFBsQ1OL2Ao0OBDD3Q1dgCqyQAB9Un2VSx4",
+    "X-API-KEY": "5tpO5lBsKp86sNHyMQDvib4cJ0er5Te4T9Ffrd6g",
   },
 };
 
@@ -17,7 +18,7 @@ const urlTwo = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=SG&lang=en&symbols=H78.SI%2CBN4.SI%2CO39.SI%2C9CI.SI%2CQ0F.SI%2CS63.SI%2CVC2.SI%2CME8U.SI%2CBUOU.SI%2CU96.SI",
   headers: {
-    "X-API-KEY": "rZRm3oFBsQ1OL2Ao0OBDD3Q1dgCqyQAB9Un2VSx4",
+    "X-API-KEY": "5tpO5lBsKp86sNHyMQDvib4cJ0er5Te4T9Ffrd6g",
   },
 };
 
@@ -25,7 +26,7 @@ const urlIndex = {
   method: "GET",
   url: "https://yfapi.net/v6/finance/quote?region=US&lang=en&symbols=%5ESTI%2C%5EN225%2C%5EHSI%2C%5EFTSE%2C%5EGSPC%2C%5EDJI%2C%5EIXIC%2C%5ECMC200",
   headers: {
-    "X-API-KEY": "rZRm3oFBsQ1OL2Ao0OBDD3Q1dgCqyQAB9Un2VSx4",
+    "X-API-KEY": "5tpO5lBsKp86sNHyMQDvib4cJ0er5Te4T9Ffrd6g",
   },
 };
 
